@@ -2,6 +2,17 @@ import config from '../config'
 import AuthApiService from '../services/auth-api-service'
 
 let _refreshTimeoutId;
+let _idleTimeoutId;
+
+document.addEventListener('mousemove', function(event) {
+  console.log(`mouse moved`)
+  // cancel old idle timeout
+  clearTimeout(_idleTimeoutId)
+  // start a new one
+  _idleTimeoutId = setTimeout(function() {
+    clearTimeout(_refreshTimeoutId)
+  }, 50 * 1000)
+}, true)
 
 const TokenService = {
   saveAuthToken(token) {
@@ -19,7 +30,6 @@ const TokenService = {
       /* remove the refresh timeout from the queue */
       clearTimeout(_refreshTimeoutId)
       /* logout */
-      TokenService.clearToken()
     }, 50 * 1000)
   },
   hasAuthToken() {
